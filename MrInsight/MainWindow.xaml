@@ -1,0 +1,40 @@
+<Window x:Class="MrInsight.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:local="clr-namespace:MrInsight"
+        Title="MrInsight" Width="1200" Height="800">
+    <TabControl>
+        <TabItem Header="マージリクエスト">
+            <local:MergeRequestView />
+        </TabItem>
+        <TabItem Header="指摘">
+            <local:TeamBadgeView />
+        </TabItem>
+        <TabItem Header="傾向">
+            <local:MemberBadgeView />
+        </TabItem>
+        <TabItem Header="推移">
+            <local:TrendView />
+        </TabItem>
+        <TabItem Header="バッジ">
+            <local:BadgeView />
+        </TabItem>
+        <TabItem Header="出力">
+            <local:ExportView />
+        </TabItem>
+        <TabItem Header="ログ">
+            <DockPanel Margin="8">
+                <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="0,0,0,4">
+                    <Button Content="コピー" Command="ApplicationCommands.Copy" CommandTarget="{Binding ElementName=LogListBox, Mode=OneTime}" Padding="12,2" />
+                    <Button Content="クリア" Click="OnClearLogClick" Padding="12,2" Margin="8,0,0,0" />
+                    <TextBlock Text="{Binding Source={x:Static local:AppLog.FilePath}, Mode=OneTime}" VerticalAlignment="Center" Margin="8,0,0,0" Foreground="Gray" />
+                </StackPanel>
+                <ListBox x:Name="LogListBox" ItemsSource="{x:Static local:AppLog.LineList}" SelectionMode="Extended" FontFamily="Consolas" IsVisibleChanged="OnLogListBoxIsVisibleChanged">
+                    <ListBox.CommandBindings>
+                        <CommandBinding Command="ApplicationCommands.Copy" Executed="OnCopyLogExecuted" CanExecute="OnCopyLogCanExecute" />
+                    </ListBox.CommandBindings>
+                </ListBox>
+            </DockPanel>
+        </TabItem>
+    </TabControl>
+</Window>

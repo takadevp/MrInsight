@@ -1,0 +1,26 @@
+<UserControl x:Class="MrInsight.TrendView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:MrInsight">
+    <Grid Margin="8">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <TextBlock Grid.Row="0" Text="{Binding ErrorMessage, Mode=OneWay}" Foreground="Firebrick" TextWrapping="Wrap" />
+        <Button Grid.Row="1" Content="再読み込み" Command="{Binding RefreshCommand, Mode=OneTime}" HorizontalAlignment="Left" Margin="0,8,0,0" Padding="12,4" />
+        <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="0,8,0,0">
+            <TextBlock Text="プロジェクト" VerticalAlignment="Center" Margin="0,0,8,0" />
+            <ComboBox ItemsSource="{Binding ProjectItemList, Mode=OneWay}" SelectedItem="{Binding ProjectSelectedItem, Mode=TwoWay}" DisplayMemberPath="ProjectPath" MinWidth="320" />
+        </StackPanel>
+        <GroupBox Grid.Row="3" Header="月別バッジ件数表" Margin="0,8,0,0">
+            <DataGrid local:CrossTableView.Table="{Binding MonthlyBadgeCountTableSource, Mode=OneWay}" AutoGenerateColumns="False" IsReadOnly="True" SelectionMode="Single" />
+        </GroupBox>
+        <GroupBox Grid.Row="4" Header="月別件数表" Margin="0,8,0,0">
+            <DataGrid local:CrossTableView.Table="{Binding MonthlyCountTableSource, Mode=OneWay}" AutoGenerateColumns="False" IsReadOnly="True" SelectionMode="Single" />
+        </GroupBox>
+    </Grid>
+</UserControl>
