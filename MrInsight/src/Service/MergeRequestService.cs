@@ -282,14 +282,14 @@ public static class MergeRequestService
 	}
 
 	/// <summary>
-	/// 指定したプロジェクトのマージリクエストを、新しい順に取得する
+	/// 指定したプロジェクトのマージリクエストのうち、タイトル・本文・作成者ユーザー名に指定した文字を含み、作成日が指定した期間に入るものを、新しい順に取得する
 	/// </summary>
 	public static ResponseMergeRequestGetProjectMergeRequestList GetProjectMergeRequestList(RequestMergeRequestGetProjectMergeRequestList request)
 	{
 		using var transaction = DatabaseTransaction.Begin();
 		var response = new ResponseMergeRequestGetProjectMergeRequestList();
 
-		var targetGMergeRequestList = GMergeRequest.FindByProjectId(request.ProjectId ?? default);
+		var targetGMergeRequestList = GMergeRequest.FindByProjectIdAndTitleAndDescriptionAndAuthorUsernameAndStartDateAndEndDate(request.ProjectId ?? default, request.Title ?? "", request.Description ?? "", request.AuthorUsername ?? "", request.StartDate, request.EndDate);
 
 		// N+1 を避けるため、ぶら下がる概念を一括取得するIDを集める
 		var targetGMergeRequestIdList = new List<int>();

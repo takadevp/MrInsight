@@ -7,10 +7,13 @@ namespace App.Common
 	/// </summary>
 	public class AppException : Exception
 	{
+		// Unity のように nullable を有効にしていない生成先に写すと、注釈が CS8632 の警告になるので抑える
+#pragma warning disable CS8632
 		/// <summary>
 		/// 追加情報
 		/// </summary>
 		public object? Context { get; }
+#pragma warning restore CS8632
 
 		/// <summary>
 		/// HTTPステータスコード。既定の500は実装のバグを表す想定外のエラー。
@@ -18,6 +21,8 @@ namespace App.Common
 		/// </summary>
 		public int StatusCode { get; }
 
+		// 上の Context と同じ理由で抑える
+#pragma warning disable CS8632
 		/// <summary>
 		/// コンストラクタ
 		/// </summary>
@@ -29,6 +34,7 @@ namespace App.Common
 		/// throw new AppException("ナンスが見つかりません。", new { nonce }, statusCode: 400);
 		/// </example>
 		public AppException(string message, object? context = null, int statusCode = 500) : base(message)
+#pragma warning restore CS8632
 		{
 			Context = context;
 			StatusCode = statusCode;

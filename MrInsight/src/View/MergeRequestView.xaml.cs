@@ -3,7 +3,7 @@ using System.Windows.Controls;
 namespace MrInsight;
 
 /// <summary>
-/// プロジェクトを選んでマージリクエストを取り込み、そのプロジェクトのマージリクエストを一覧にする。
+/// プロジェクトを選んでマージリクエストを取り込み、そのプロジェクトのマージリクエストを、タイトル・本文・作成者・作成日で探して一覧にする。
 /// 選んだマージリクエストのスレッドと、選んだスレッドのコメントも一覧にする
 /// </summary>
 public partial class MergeRequestView : UserControl
