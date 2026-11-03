@@ -3,7 +3,7 @@ using App.Common;
 namespace MrInsight;
 
 /// <summary>
-/// プロジェクトを選んでマージリクエストを取り込み、そのプロジェクトのマージリクエストを一覧にする。
+/// プロジェクトを選んでマージリクエストを取り込み、そのプロジェクトのマージリクエストを、タイトル・本文・作成者・作成日で探して一覧にする。
 /// 選んだマージリクエストのスレッドと、選んだスレッドのコメントも一覧にする
 /// </summary>
 public sealed class MergeRequestViewModel : ViewModelBase
@@ -106,6 +106,68 @@ public sealed class MergeRequestViewModel : ViewModelBase
 			}
 		}
 	}
+
+	private string _mergeRequestTableTitle = string.Empty;
+
+	/// <summary>
+	/// マージリクエスト表のタイトルの入力欄
+	/// </summary>
+	public string MergeRequestTableTitle
+	{
+		get => _mergeRequestTableTitle;
+		set => SetProperty(ref _mergeRequestTableTitle, value);
+	}
+
+	private string _mergeRequestTableDescription = string.Empty;
+
+	/// <summary>
+	/// マージリクエスト表の本文の入力欄
+	/// </summary>
+	public string MergeRequestTableDescription
+	{
+		get => _mergeRequestTableDescription;
+		set => SetProperty(ref _mergeRequestTableDescription, value);
+	}
+
+	private string _mergeRequestTableAuthorUsername = string.Empty;
+
+	/// <summary>
+	/// マージリクエスト表の作成者ユーザー名の入力欄
+	/// </summary>
+	public string MergeRequestTableAuthorUsername
+	{
+		get => _mergeRequestTableAuthorUsername;
+		set => SetProperty(ref _mergeRequestTableAuthorUsername, value);
+	}
+
+	private DateTime? _mergeRequestTableStartDate;
+
+	/// <summary>
+	/// マージリクエスト表の開始日の入力欄。選ばなければ空
+	/// </summary>
+	public DateTime? MergeRequestTableStartDate
+	{
+		get => _mergeRequestTableStartDate;
+		set => SetProperty(ref _mergeRequestTableStartDate, value);
+	}
+
+	private DateTime? _mergeRequestTableEndDate;
+
+	/// <summary>
+	/// マージリクエスト表の終了日の入力欄。選ばなければ空
+	/// </summary>
+	public DateTime? MergeRequestTableEndDate
+	{
+		get => _mergeRequestTableEndDate;
+		set => SetProperty(ref _mergeRequestTableEndDate, value);
+	}
+
+	private RelayCommand? _mergeRequestTableSearchCommand;
+
+	/// <summary>
+	/// マージリクエスト表を入力欄の値で読み込み直すコマンド
+	/// </summary>
+	public RelayCommand MergeRequestTableSearchCommand => _mergeRequestTableSearchCommand ??= new RelayCommand(LoadMergeRequestTable, CanSearchMergeRequestTable);
 
 	private List<MergeRequestThread> _threadTableItemList = [];
 
@@ -362,6 +424,11 @@ public sealed class MergeRequestViewModel : ViewModelBase
 		{
 			var request = new RequestMergeRequestGetProjectMergeRequestList();
 			request.ProjectId = ProjectSelectedItem.ProjectId;
+			request.Title = MergeRequestTableTitle;
+			request.Description = MergeRequestTableDescription;
+			request.AuthorUsername = MergeRequestTableAuthorUsername;
+			request.StartDate = MergeRequestTableStartDate;
+			request.EndDate = MergeRequestTableEndDate;
 			var response = MergeRequestService.GetProjectMergeRequestList(request);
 			// 表は新しい一覧に置き換わると選択を外すので、置き換える前に選んでいた行の主キーを覚えておく
 			var selectedKey = MergeRequestTableSelectedItem?.Id;
@@ -385,6 +452,19 @@ public sealed class MergeRequestViewModel : ViewModelBase
 			MergeRequestTableItemList = [];
 			ErrorMessage = exception.Message;
 		}
+	}
+
+	/// <summary>
+	/// マージリクエスト表を検索できるか。要求に使う行が選ばれるまで押せない
+	/// </summary>
+	private bool CanSearchMergeRequestTable()
+	{
+		if (ProjectSelectedItem == null)
+		{
+			return false;
+		}
+
+		return true;
 	}
 
 	/// <summary>

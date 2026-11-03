@@ -48,6 +48,11 @@ public sealed class ApplicationGlobalDbContext(string connectionString) : Applic
 	public DbSet<GBadge> Badges { get; set; }
 
 	/// <summary>
+	/// 除くタイトル
+	/// </summary>
+	public DbSet<GExcludedTitle> ExcludedTitles { get; set; }
+
+	/// <summary>
 	/// モデル作成時の設定
 	/// </summary>
 	protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -62,6 +67,7 @@ public sealed class ApplicationGlobalDbContext(string connectionString) : Applic
 		modelBuilder.ApplyConfiguration(new GMergeRequestCommentConfiguration());
 		modelBuilder.ApplyConfiguration(new GProjectConfiguration());
 		modelBuilder.ApplyConfiguration(new GBadgeConfiguration());
+		modelBuilder.ApplyConfiguration(new GExcludedTitleConfiguration());
 	}
 
 	/// <summary>

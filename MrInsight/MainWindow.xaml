@@ -19,6 +19,9 @@
         <TabItem Header="バッジ">
             <local:BadgeView />
         </TabItem>
+        <TabItem Header="除くタイトル">
+            <local:ExcludedTitleView />
+        </TabItem>
         <TabItem Header="出力">
             <local:ExportView />
         </TabItem>

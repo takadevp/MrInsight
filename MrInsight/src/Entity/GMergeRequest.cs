@@ -212,12 +212,12 @@ public class GMergeRequest : AbstractEntity
 	}
 
 	/// <summary>
-	/// プロジェクトIDで取得する
+	/// プロジェクトIDとタイトルと本文と作成者ユーザー名と開始日と終了日で取得する
 	/// </summary>
-	public static List<GMergeRequest> FindByProjectId(int projectId)
+	public static List<GMergeRequest> FindByProjectIdAndTitleAndDescriptionAndAuthorUsernameAndStartDateAndEndDate(int projectId, string title, string description, string authorUsername, DateTime? startDate, DateTime? endDate)
 	{
 		var targetGMergeRequestList = DbContextScope.GlobalContext.MergeRequests
-			.Where(entity => entity.ProjectId == projectId)
+			.Where(entity => entity.ProjectId == projectId && entity.Title.Contains(title) && entity.Description.Contains(description) && entity.AuthorUsername.Contains(authorUsername) && (startDate == null || entity.CreatedAt >= startDate) && (endDate == null || entity.CreatedAt.Date <= endDate))
 			.OrderByDescending(entity => entity.CreatedAt)
 			.ToList();
 		return targetGMergeRequestList;
@@ -255,7 +255,7 @@ public class GMergeRequest : AbstractEntity
 		// 集計・一覧の概念は保存しないので、DB では絞って列を選ぶだけにし、読み込んでから MergeRequestAuthorCount に詰める
 		var rowMergeRequestAuthorCountList = (
 			from entity in DbContextScope.GlobalContext.MergeRequests
-			where entity.ProjectId == projectId
+			where entity.ProjectId == projectId && !DbContextScope.GlobalContext.ExcludedTitles.Any(registered => entity.Title.StartsWith(registered.TitlePrefix))
 			select new
 			{
 				AuthorUsername = entity.AuthorUsername,
@@ -289,7 +289,7 @@ public class GMergeRequest : AbstractEntity
 		// 集計・一覧の概念は保存しないので、DB では絞って列を選ぶだけにし、読み込んでから MergeRequestAuthorMonthlyCount に詰める
 		var rowMergeRequestAuthorMonthlyCountList = (
 			from entity in DbContextScope.GlobalContext.MergeRequests
-			where entity.ProjectId == projectId
+			where entity.ProjectId == projectId && !DbContextScope.GlobalContext.ExcludedTitles.Any(registered => entity.Title.StartsWith(registered.TitlePrefix))
 			select new
 			{
 				CreatedAt = entity.CreatedAt,

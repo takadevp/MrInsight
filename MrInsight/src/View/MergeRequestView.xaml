@@ -26,16 +26,43 @@
             <Button Content="キャンセル" Command="{Binding ImportMergeRequestCancelCommand, Mode=OneTime}" Margin="8,0,0,0" Padding="12,4" />
         </StackPanel>
         <GroupBox Grid.Row="4" Header="マージリクエスト表" Margin="0,8,0,0">
-            <DataGrid ItemsSource="{Binding MergeRequestTableItemList, Mode=OneWay}" SelectedItem="{Binding MergeRequestTableSelectedItem, Mode=TwoWay}" AutoGenerateColumns="False" IsReadOnly="True" SelectionMode="Single">
-                <DataGrid.Columns>
-                    <DataGridTextColumn Header="IID" Binding="{Binding Iid, Mode=OneWay}" />
-                    <DataGridTextColumn Header="タイトル" Binding="{Binding Title, Mode=OneWay}" />
-                    <DataGridTextColumn Header="作成者ユーザー名" Binding="{Binding AuthorUsername, Mode=OneWay}" />
-                    <DataGridTextColumn Header="状態" Binding="{Binding State, Mode=OneWay}" />
-                    <DataGridTextColumn Header="作成日" Binding="{Binding CreatedAt, Mode=OneWay, StringFormat='yyyy/MM/dd HH:mm'}" />
-                    <DataGridTextColumn Header="マージ日" Binding="{Binding MergedAt, Mode=OneWay, StringFormat='yyyy/MM/dd HH:mm'}" />
-                </DataGrid.Columns>
-            </DataGrid>
+            <DockPanel>
+                <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="0,4,0,4">
+                    <TextBlock Text="タイトル" VerticalAlignment="Center" Margin="0,0,8,0" />
+                    <TextBox Text="{Binding MergeRequestTableTitle, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" MinWidth="160" VerticalContentAlignment="Center" Margin="0,0,8,0">
+                        <TextBox.InputBindings>
+                            <KeyBinding Key="Enter" Command="{Binding MergeRequestTableSearchCommand, Mode=OneTime}" />
+                        </TextBox.InputBindings>
+                    </TextBox>
+                    <TextBlock Text="本文" VerticalAlignment="Center" Margin="0,0,8,0" />
+                    <TextBox Text="{Binding MergeRequestTableDescription, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" MinWidth="160" VerticalContentAlignment="Center" Margin="0,0,8,0">
+                        <TextBox.InputBindings>
+                            <KeyBinding Key="Enter" Command="{Binding MergeRequestTableSearchCommand, Mode=OneTime}" />
+                        </TextBox.InputBindings>
+                    </TextBox>
+                    <TextBlock Text="作成者ユーザー名" VerticalAlignment="Center" Margin="0,0,8,0" />
+                    <TextBox Text="{Binding MergeRequestTableAuthorUsername, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" MinWidth="160" VerticalContentAlignment="Center" Margin="0,0,8,0">
+                        <TextBox.InputBindings>
+                            <KeyBinding Key="Enter" Command="{Binding MergeRequestTableSearchCommand, Mode=OneTime}" />
+                        </TextBox.InputBindings>
+                    </TextBox>
+                    <TextBlock Text="開始日" VerticalAlignment="Center" Margin="0,0,8,0" />
+                    <DatePicker SelectedDate="{Binding MergeRequestTableStartDate, Mode=TwoWay}" VerticalContentAlignment="Center" Margin="0,0,8,0" />
+                    <TextBlock Text="終了日" VerticalAlignment="Center" Margin="0,0,8,0" />
+                    <DatePicker SelectedDate="{Binding MergeRequestTableEndDate, Mode=TwoWay}" VerticalContentAlignment="Center" Margin="0,0,8,0" />
+                    <Button Content="検索" Command="{Binding MergeRequestTableSearchCommand, Mode=OneTime}" Padding="12,4" />
+                </StackPanel>
+                <DataGrid ItemsSource="{Binding MergeRequestTableItemList, Mode=OneWay}" SelectedItem="{Binding MergeRequestTableSelectedItem, Mode=TwoWay}" AutoGenerateColumns="False" IsReadOnly="True" SelectionMode="Single">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="IID" Binding="{Binding Iid, Mode=OneWay}" />
+                        <DataGridTextColumn Header="タイトル" Binding="{Binding Title, Mode=OneWay}" />
+                        <DataGridTextColumn Header="作成者ユーザー名" Binding="{Binding AuthorUsername, Mode=OneWay}" />
+                        <DataGridTextColumn Header="状態" Binding="{Binding State, Mode=OneWay}" />
+                        <DataGridTextColumn Header="作成日" Binding="{Binding CreatedAt, Mode=OneWay, StringFormat='yyyy/MM/dd HH:mm'}" />
+                        <DataGridTextColumn Header="マージ日" Binding="{Binding MergedAt, Mode=OneWay, StringFormat='yyyy/MM/dd HH:mm'}" />
+                    </DataGrid.Columns>
+                </DataGrid>
+            </DockPanel>
         </GroupBox>
         <GroupBox Grid.Row="5" Header="スレッド表" Margin="0,8,0,0">
             <DataGrid ItemsSource="{Binding ThreadTableItemList, Mode=OneWay}" SelectedItem="{Binding ThreadTableSelectedItem, Mode=TwoWay}" AutoGenerateColumns="False" IsReadOnly="True" SelectionMode="Single">
