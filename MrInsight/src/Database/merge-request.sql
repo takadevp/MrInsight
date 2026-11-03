@@ -117,3 +117,12 @@ CREATE TABLE IF NOT EXISTS g_badge (
     update_date TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 CREATE UNIQUE INDEX IF NOT EXISTS uq_g_badge_01 ON g_badge (badge_name);
+
+-- 集計から除くマージリクエストの、タイトルの先頭の文字1つ
+CREATE TABLE IF NOT EXISTS g_excluded_title (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    title_prefix TEXT NOT NULL,
+    create_date TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    update_date TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+CREATE UNIQUE INDEX IF NOT EXISTS uq_g_excluded_title_01 ON g_excluded_title (title_prefix);

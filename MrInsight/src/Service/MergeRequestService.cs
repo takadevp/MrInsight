@@ -195,6 +195,82 @@ public static class MergeRequestService
 	}
 
 	/// <summary>
+	/// 集計から除くタイトルの先頭を、文字の順に取得する
+	/// </summary>
+	public static ResponseMergeRequestGetExcludedTitleList GetExcludedTitleList()
+	{
+		using var transaction = DatabaseTransaction.Begin();
+		var response = new ResponseMergeRequestGetExcludedTitleList();
+
+		var targetGExcludedTitleList = GExcludedTitle.GetAll();
+		foreach (var targetGExcludedTitle in targetGExcludedTitleList)
+		{
+			var responseExcludedTitle = new ExcludedTitle
+			{
+				Id = targetGExcludedTitle.Id,
+				TitlePrefix = targetGExcludedTitle.TitlePrefix,
+			};
+
+			response.ExcludedTitleList.Add(responseExcludedTitle);
+		}
+
+		transaction.Commit();
+		return response;
+	}
+
+	/// <summary>
+	/// 集計から除くタイトルの先頭を1つ登録する
+	/// </summary>
+	public static void AddExcludedTitle(RequestMergeRequestAddExcludedTitle request)
+	{
+		if (string.IsNullOrEmpty(request.TitlePrefix))
+		{
+			throw new AppException("タイトルの先頭を指定してください。", statusCode: 400);
+		}
+
+		if (request.TitlePrefix.Length > 255)
+		{
+			throw new AppException("タイトルの先頭は255文字以内で指定してください。", statusCode: 400);
+		}
+
+		using var transaction = DatabaseTransaction.Begin();
+		var uniqueTitlePrefixGExcludedTitle = GExcludedTitle.FindFirstByTitlePrefix(request.TitlePrefix ?? "");
+		if (uniqueTitlePrefixGExcludedTitle != null)
+		{
+			throw new AppException("登録済みのタイトルです。", statusCode: 400);
+		}
+
+		var targetGExcludedTitle = GExcludedTitle.CreateDefault(request.TitlePrefix!);
+
+		targetGExcludedTitle.Save();
+
+		transaction.Commit();
+	}
+
+	/// <summary>
+	/// 登録した除くタイトルの先頭を1つ消す
+	/// </summary>
+	public static void DeleteExcludedTitle(RequestMergeRequestDeleteExcludedTitle request)
+	{
+		if (request.ExcludedTitleId == null)
+		{
+			throw new AppException("除くタイトルIDを指定してください。", statusCode: 400);
+		}
+
+		using var transaction = DatabaseTransaction.Begin();
+		var targetGExcludedTitle = GExcludedTitle.FindById(request.ExcludedTitleId!.Value);
+
+		if (targetGExcludedTitle == null)
+		{
+			throw new AppException("除くタイトルが見つかりません。", statusCode: 404);
+		}
+
+		targetGExcludedTitle.Delete();
+
+		transaction.Commit();
+	}
+
+	/// <summary>
 	/// すべてのプロジェクトのコメントから、登録していないバッジごとの件数を、多い順に取得する
 	/// </summary>
 	public static ResponseMergeRequestGetUnregisteredBadgeCountList GetUnregisteredBadgeCountList()

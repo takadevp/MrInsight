@@ -255,7 +255,7 @@ public class GMergeRequest : AbstractEntity
 		// 集計・一覧の概念は保存しないので、DB では絞って列を選ぶだけにし、読み込んでから MergeRequestAuthorCount に詰める
 		var rowMergeRequestAuthorCountList = (
 			from entity in DbContextScope.GlobalContext.MergeRequests
-			where entity.ProjectId == projectId
+			where entity.ProjectId == projectId && !DbContextScope.GlobalContext.ExcludedTitles.Any(registered => entity.Title.StartsWith(registered.TitlePrefix))
 			select new
 			{
 				AuthorUsername = entity.AuthorUsername,
@@ -289,7 +289,7 @@ public class GMergeRequest : AbstractEntity
 		// 集計・一覧の概念は保存しないので、DB では絞って列を選ぶだけにし、読み込んでから MergeRequestAuthorMonthlyCount に詰める
 		var rowMergeRequestAuthorMonthlyCountList = (
 			from entity in DbContextScope.GlobalContext.MergeRequests
-			where entity.ProjectId == projectId
+			where entity.ProjectId == projectId && !DbContextScope.GlobalContext.ExcludedTitles.Any(registered => entity.Title.StartsWith(registered.TitlePrefix))
 			select new
 			{
 				CreatedAt = entity.CreatedAt,

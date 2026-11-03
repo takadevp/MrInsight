@@ -130,7 +130,7 @@ public class GMergeRequestComment : AbstractEntity
 			from entity in DbContextScope.GlobalContext.MergeRequestComments
 			join mergeRequestThread in DbContextScope.GlobalContext.MergeRequestThreads on entity.ThreadId equals mergeRequestThread.Id
 			join mergeRequest in DbContextScope.GlobalContext.MergeRequests on mergeRequestThread.MergeRequestId equals mergeRequest.Id
-			where mergeRequest.ProjectId == projectId && mergeRequest.AuthorUsername == authorUsername
+			where mergeRequest.ProjectId == projectId && mergeRequest.AuthorUsername == authorUsername && !DbContextScope.GlobalContext.ExcludedTitles.Any(registered => mergeRequest.Title.StartsWith(registered.TitlePrefix))
 			select new
 			{
 				AuthorUsername = mergeRequest.AuthorUsername,
@@ -193,7 +193,7 @@ public class GMergeRequestComment : AbstractEntity
 			from entity in DbContextScope.GlobalContext.MergeRequestComments
 			join mergeRequestThread in DbContextScope.GlobalContext.MergeRequestThreads on entity.ThreadId equals mergeRequestThread.Id
 			join mergeRequest in DbContextScope.GlobalContext.MergeRequests on mergeRequestThread.MergeRequestId equals mergeRequest.Id
-			where mergeRequest.ProjectId == projectId
+			where mergeRequest.ProjectId == projectId && !DbContextScope.GlobalContext.ExcludedTitles.Any(registered => mergeRequest.Title.StartsWith(registered.TitlePrefix))
 			select new
 			{
 				Body = entity.Body,
@@ -249,7 +249,7 @@ public class GMergeRequestComment : AbstractEntity
 			from entity in DbContextScope.GlobalContext.MergeRequestComments
 			join mergeRequestThread in DbContextScope.GlobalContext.MergeRequestThreads on entity.ThreadId equals mergeRequestThread.Id
 			join mergeRequest in DbContextScope.GlobalContext.MergeRequests on mergeRequestThread.MergeRequestId equals mergeRequest.Id
-			where mergeRequest.ProjectId == projectId && mergeRequest.AuthorUsername == authorUsername
+			where mergeRequest.ProjectId == projectId && mergeRequest.AuthorUsername == authorUsername && !DbContextScope.GlobalContext.ExcludedTitles.Any(registered => mergeRequest.Title.StartsWith(registered.TitlePrefix))
 			select new
 			{
 				CreatedAt = entity.CreatedAt,
@@ -297,7 +297,7 @@ public class GMergeRequestComment : AbstractEntity
 			from entity in DbContextScope.GlobalContext.MergeRequestComments
 			join mergeRequestThread in DbContextScope.GlobalContext.MergeRequestThreads on entity.ThreadId equals mergeRequestThread.Id
 			join mergeRequest in DbContextScope.GlobalContext.MergeRequests on mergeRequestThread.MergeRequestId equals mergeRequest.Id
-			where mergeRequest.ProjectId == projectId
+			where mergeRequest.ProjectId == projectId && !DbContextScope.GlobalContext.ExcludedTitles.Any(registered => mergeRequest.Title.StartsWith(registered.TitlePrefix))
 			select new
 			{
 				Iid = mergeRequest.Iid,
@@ -361,7 +361,7 @@ public class GMergeRequestComment : AbstractEntity
 			from entity in DbContextScope.GlobalContext.MergeRequestComments
 			join mergeRequestThread in DbContextScope.GlobalContext.MergeRequestThreads on entity.ThreadId equals mergeRequestThread.Id
 			join mergeRequest in DbContextScope.GlobalContext.MergeRequests on mergeRequestThread.MergeRequestId equals mergeRequest.Id
-			where mergeRequest.ProjectId == projectId
+			where mergeRequest.ProjectId == projectId && !DbContextScope.GlobalContext.ExcludedTitles.Any(registered => mergeRequest.Title.StartsWith(registered.TitlePrefix))
 			select new
 			{
 				CreatedAt = entity.CreatedAt,
@@ -427,6 +427,9 @@ public class GMergeRequestComment : AbstractEntity
 		var registeredBadgeNameSet = new HashSet<string>(DbContextScope.GlobalContext.Badges.Select(entity => entity.BadgeName));
 		var rowMergeRequestUnregisteredBadgeCountList = (
 			from entity in DbContextScope.GlobalContext.MergeRequestComments
+			join mergeRequestThread in DbContextScope.GlobalContext.MergeRequestThreads on entity.ThreadId equals mergeRequestThread.Id
+			join mergeRequest in DbContextScope.GlobalContext.MergeRequests on mergeRequestThread.MergeRequestId equals mergeRequest.Id
+			where !DbContextScope.GlobalContext.ExcludedTitles.Any(registered => mergeRequest.Title.StartsWith(registered.TitlePrefix))
 			select new
 			{
 				Body = entity.Body,
